@@ -14,7 +14,9 @@ class ReturnFeature(Feature):
 
         out = df.copy()
 
-        out["Return"] = out["Close"].pct_change()
+       from core.constants import Columns
+
+out[Columns.RETURN] = out[Columns.CLOSE].pct_change()
 
         out["LogReturn"] = np.log(
             out["Close"] / out["Close"].shift(1)
