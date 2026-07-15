@@ -1,133 +1,268 @@
 """
-Project Eagle
-Configuration
+Project Eagle v0.1
 
-Author: Project Eagle
+Configuration Module
+
+负责：
+- 项目路径管理
+- 市场资产配置
+- 数据下载配置
+- 指标参数配置
+- 回测参数配置
+- 运行环境配置
+
+所有核心模块通过 RuntimeConfig 获取配置。
+
 """
 
 from __future__ import annotations
 
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Dict
+from typing import Dict, List
 
 
-# ---------------------------------------------------------------------
-# Project
-# ---------------------------------------------------------------------
+# ============================================================
+# Project Information
+# ============================================================
 
 PROJECT_NAME = "Project Eagle"
-VERSION = "0.1.0"
+
+PROJECT_VERSION = "0.1.0"
 
 
-# ---------------------------------------------------------------------
-# Paths
-# ---------------------------------------------------------------------
+# ============================================================
+# Directory Configuration
+# ============================================================
 
 ROOT_DIR = Path(__file__).resolve().parent.parent
 
+
 CACHE_DIR = ROOT_DIR / "cache"
+
 DATA_DIR = ROOT_DIR / "data"
+
 RESULT_DIR = ROOT_DIR / "results"
+
 LOG_DIR = ROOT_DIR / "logs"
 
-for path in (
+
+DEFAULT_DIRECTORIES = [
     CACHE_DIR,
     DATA_DIR,
     RESULT_DIR,
     LOG_DIR,
-):
-    path.mkdir(parents=True, exist_ok=True)
+]
 
 
-# ---------------------------------------------------------------------
+def initialize_directories() -> None:
+    """
+    创建项目运行所需目录。
+
+    在系统启动时调用。
+    """
+
+    for directory in DEFAULT_DIRECTORIES:
+        directory.mkdir(
+            parents=True,
+            exist_ok=True
+        )
+
+
+# ============================================================
+# Data Configuration
+# ============================================================
+
+START_DATE = "2000-01-01"
+
+
+END_DATE = None
+
+
+AUTO_CACHE = True
+
+
+CACHE_FORMAT = "csv"
+
+
+AUTO_ADJUST_PRICE = False
+
+
+# ============================================================
 # Market Assets
-# ---------------------------------------------------------------------
+# ============================================================
 
-ETF = {
+ETF_UNIVERSE: Dict[str, str] = {
+
     "VOO": "VOO",
+
     "QQQM": "QQQM",
+
+    # Benchmark
     "SPY": "SPY",
+
     "QQQ": "QQQ",
 }
 
-MACRO = {
+
+MACRO_UNIVERSE: Dict[str, str] = {
+
+    # Volatility Index
     "VIX": "^VIX",
-    "TNX": "^TNX",
-    "FVX": "^FVX",
-    "IRX": "^IRX",
-    "USD": "DX-Y.NYB",
+
+    # US Treasury Yield
+    "US10Y": "^TNX",
+
+    "US5Y": "^FVX",
+
+    "US3M": "^IRX",
+
+    # Dollar Index
+    "DXY": "DX-Y.NYB",
 }
 
-FX = {
+
+FX_UNIVERSE: Dict[str, str] = {
+
     "NZDUSD": "NZDUSD=X",
+
     "USDCNY": "USDCNY=X",
 }
 
 
-# ---------------------------------------------------------------------
-# Download
-# ---------------------------------------------------------------------
+# ============================================================
+# Indicator Configuration
+# ============================================================
 
-START_DATE = "2000-01-01"
+@dataclass(frozen=True)
+class IndicatorConfig:
+    """
+    技术指标参数配置。
+    """
 
-AUTO_CACHE = True
-
-AUTO_ADJUST = False
-
-
-# ---------------------------------------------------------------------
-# Indicator Parameters
-# ---------------------------------------------------------------------
-
-MA_WINDOWS = [5, 10, 20, 50, 100, 200]
-
-EMA_WINDOWS = [12, 26, 50]
-
-RSI_PERIOD = 14
-
-ATR_PERIOD = 14
-
-MACD_FAST = 12
-MACD_SLOW = 26
-MACD_SIGNAL = 9
-
-VOL_WINDOW = 20
-
-ROLLING_HIGH = 252
+    ma_windows: List[int] = field(
+        default_factory=lambda: [
+            5,
+            10,
+            20,
+            50,
+            100,
+            200,
+        ]
+    )
 
 
-# ---------------------------------------------------------------------
-# Backtest
-# ---------------------------------------------------------------------
-
-INITIAL_CAPITAL = 100000.0
-
-COMMISSION = 0.0005
-
-SLIPPAGE = 0.0002
+    ema_windows: List[int] = field(
+        default_factory=lambda: [
+            12,
+            26,
+            50,
+        ]
+    )
 
 
-# ---------------------------------------------------------------------
-# Runtime Config
-# ---------------------------------------------------------------------
+    rsi_period: int = 14
 
-@dataclass(slots=True)
-class RuntimeConfig:
+
+    atr_period: int = 14
+
+
+    macd_fast: int = 12
+
+
+    macd_slow: int = 26
+
+
+    macd_signal: int = 9
+
+
+    volatility_window: int = 20
+
+
+    rolling_high_window: int = 252
+
+
+
+# ============================================================
+# Backtest Configuration
+# ============================================================
+
+@dataclass(frozen=True)
+class BacktestConfig:
+    """
+    回测环境参数。
+    """
+
+    initial_capital: float = 100000.0
+
+
+    commission: float = 0.0005
+
+
+    slippage: float = 0.0002
+
 
     benchmark: str = "VOO"
 
+
+
+# ============================================================
+# Runtime Configuration
+# ============================================================
+
+@dataclass
+class RuntimeConfig:
+    """
+    Project Eagle运行时总配置。
+
+    所有核心模块推荐接收该对象。
+    """
+
     start_date: str = START_DATE
 
-    auto_cache: bool = AUTO_CACHE
 
-    initial_capital: float = INITIAL_CAPITAL
+    end_date: str | None = END_DATE
 
-    indicators: Dict = field(
-        default_factory=lambda: {
-            "ma": MA_WINDOWS,
-            "ema": EMA_WINDOWS,
-            "rsi": RSI_PERIOD,
-            "atr": ATR_PERIOD,
-        }
+
+    cache_enabled: bool = AUTO_CACHE
+
+
+    cache_dir: Path = CACHE_DIR
+
+
+    data_dir: Path = DATA_DIR
+
+
+    result_dir: Path = RESULT_DIR
+
+
+    log_dir: Path = LOG_DIR
+
+
+    indicators: IndicatorConfig = field(
+        default_factory=IndicatorConfig
     )
+
+
+    backtest: BacktestConfig = field(
+        default_factory=BacktestConfig
+    )
+
+
+# ============================================================
+# Helper Functions
+# ============================================================
+
+def get_default_config() -> RuntimeConfig:
+    """
+    返回默认运行配置。
+
+    Returns
+    -------
+    RuntimeConfig
+        默认项目配置
+    """
+
+    initialize_directories()
+
+    return RuntimeConfig()
