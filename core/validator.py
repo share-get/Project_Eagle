@@ -22,7 +22,9 @@ class DataValidator:
     ) -> pd.DataFrame:
 
         if df.empty:
-            raise ValueError("Empty dataframe.")
+            raise ValidationError(
+    "Empty dataframe."
+)
 
         missing = [
             c
