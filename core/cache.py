@@ -49,11 +49,16 @@ class CacheManager:
         ticker: str,
     ) -> pd.DataFrame:
 
-        return pd.read_csv(
+        return try:
+    df = pd.read_csv(
             self.cache_path(ticker),
             index_col=0,
             parse_dates=True,
         )
+except Exception as e:
+    raise CacheError(
+        f"Failed to load cache: {path}"
+    ) from e
 
     def save(
         self,
