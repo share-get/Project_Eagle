@@ -9,7 +9,10 @@ scattered across the codebase.
 
 from __future__ import annotations
 
-from enum import Enum
+from enum import StrEnum
+
+class Column(StrEnum):
+    CLOSE = "Close"
 
 
 # =============================================================================
