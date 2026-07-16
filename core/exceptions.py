@@ -1,7 +1,5 @@
 """
-Project Eagle - Custom Exceptions
-
-Centralized exception hierarchy used across the project.
+Project Eagle exception hierarchy.
 """
 
 from __future__ import annotations
@@ -15,13 +13,13 @@ class EagleError(Exception):
     pass
 
 
-# =============================================================================
-# Data Layer
-# =============================================================================
+# ============================================================================
+# Data
+# ============================================================================
 
 class DataError(EagleError):
     """
-    Base exception for all data related errors.
+    Base exception for data layer.
     """
 
     pass
@@ -29,15 +27,7 @@ class DataError(EagleError):
 
 class DataDownloadError(DataError):
     """
-    Market data download failed.
-    """
-
-    pass
-
-
-class CacheError(DataError):
-    """
-    Cache read/write failed.
+    Raised when market data download fails.
     """
 
     pass
@@ -45,111 +35,75 @@ class CacheError(DataError):
 
 class ValidationError(DataError):
     """
-    Data validation failed.
+    Raised when downloaded data is invalid.
     """
 
     pass
 
 
-class FeatureError(DataError):
+class CacheError(DataError):
     """
-    Feature engineering failed.
+    Raised when cache read/write fails.
     """
 
     pass
 
 
-# =============================================================================
-# Indicator Layer
-# =============================================================================
+# ============================================================================
+# Indicators
+# ============================================================================
 
 class IndicatorError(EagleError):
     """
-    Indicator calculation failed.
+    Indicator calculation error.
     """
 
     pass
 
 
-# =============================================================================
-# Factor Layer
-# =============================================================================
+# ============================================================================
+# Factors
+# ============================================================================
 
 class FactorError(EagleError):
     """
-    Factor calculation failed.
+    Factor calculation error.
     """
 
     pass
 
 
-# =============================================================================
-# Score Layer
-# =============================================================================
-
-class ScoreError(EagleError):
-    """
-    Eagle Score calculation failed.
-    """
-
-    pass
-
-
-# =============================================================================
-# Strategy Layer
-# =============================================================================
+# ============================================================================
+# Strategy
+# ============================================================================
 
 class StrategyError(EagleError):
     """
-    Strategy execution failed.
+    Strategy execution error.
     """
 
     pass
 
 
-# =============================================================================
-# Backtest Layer
-# =============================================================================
+# ============================================================================
+# Backtest
+# ============================================================================
 
 class BacktestError(EagleError):
     """
-    Backtest execution failed.
+    Backtest execution error.
     """
 
     pass
 
 
-# =============================================================================
-# Portfolio Layer
-# =============================================================================
-
-class PortfolioError(EagleError):
-    """
-    Portfolio management failed.
-    """
-
-    pass
-
-
-# =============================================================================
-# Report Layer
-# =============================================================================
-
-class ReportError(EagleError):
-    """
-    Report generation failed.
-    """
-
-    pass
-
-
-# =============================================================================
+# ============================================================================
 # Configuration
-# =============================================================================
+# ============================================================================
 
-class ConfigError(EagleError):
+class ConfigurationError(EagleError):
     """
-    Configuration error.
+    Invalid project configuration.
     """
 
     pass
