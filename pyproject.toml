@@ -1,0 +1,66 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "project-eagle"
+version = "0.1.0-alpha"
+description = "A quantitative framework for long-term ETF investing."
+readme = "README.md"
+requires-python = ">=3.11"
+
+authors = [
+    {name = "Project Eagle"}
+]
+
+dependencies = [
+    "pandas>=2.2.0",
+    "numpy>=2.0.0",
+    "yfinance>=0.2.60",
+]
+
+[project.optional-dependencies]
+
+dev = [
+    "pytest>=8.3",
+    "pytest-cov>=6.0",
+    "ruff>=0.12",
+    "black>=25.0",
+    "mypy>=1.16",
+]
+
+[tool.setuptools.packages.find]
+include = ["project_eagle*"]
+
+[tool.black]
+line-length = 88
+target-version = ["py311"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py311"
+
+[tool.ruff.lint]
+select = [
+    "E",
+    "F",
+    "I",
+    "UP",
+]
+
+[tool.pytest.ini_options]
+testpaths = [
+    "tests",
+]
+
+python_files = [
+    "test_*.py",
+]
+
+addopts = "-q"
+
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = true
+warn_unused_configs = true
+ignore_missing_imports = true
